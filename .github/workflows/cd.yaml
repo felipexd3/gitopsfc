@@ -8,7 +8,7 @@ on:
 
 #tarefas a serem executadas
 jobs:
-  #tarefa de build
+  #tarefa de build da imagem docker
   build:
     name: Build
     #tarefa será executada no seguinte SO
@@ -29,3 +29,31 @@ jobs:
         repository: ${{ secrets.DOCKER_USERNAME }}/gitopsfc
         #cria tag na imagem com hash do commit no git e como latest
         tags: ${{ github.sha }}, latest
+
+    #Action para instalação do kustomize
+    - name: Setup kustomize
+      uses: imranismail/setup-kustomize@v1
+      with:
+        kustomize-version: "3.6.1"
+
+    #Action para mudar a tag da imagem para o hash do commit
+    - name: Update k8s resources
+      env: 
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      run: |
+        cd k8s
+        kustomize edit set image goserver=$DOCKER_USERNAME/gitopsfc:$GITHUB_SHA
+
+    #Action para commitar mudança de tag
+    - name: Commit - Apply tag change 
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "Github Action"
+        git commit -am "Bump docker version"
+
+    #Action que efetiva o push da alteração
+    - name: Push
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.TOKEN_GITHUB }}
+        repository: felipexd3/gitopsfc
