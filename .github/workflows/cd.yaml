@@ -27,5 +27,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ${{ secrets.DOCKER_USERNAME }}/gitopsfc
-        #cria tag na imagem com hash do git e como latest
+        #cria tag na imagem com hash do commit no git e como latest
         tags: ${{ github.sha }}, latest
