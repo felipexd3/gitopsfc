@@ -8,4 +8,4 @@ resources:
 images:
 - name: goserver
   newName: felipexd3/gitopsfc
-  newTag: aff69d928101bc346d4e4e61b3a831fae96d1c64
+  newTag: d6265ebe69be4748c7fc3361ac7b68ac50c60866
